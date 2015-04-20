@@ -12,6 +12,7 @@ import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.StreamingDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
+import fr.tse.fi2.hpp.labs.queries.impl.lab1.StupidAveragePrice;
 
 /**
  * Main class of the program. Register your new queries here
