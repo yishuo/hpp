@@ -53,6 +53,11 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 */
 	public final BlockingQueue<DebsRecord> eventqueue;
 	/**
+	 * Internal queue of results
+	 */
+	public final BlockingQueue<String> resultqueue;
+	
+	/**
 	 * Global measurement
 	 */
 	private final QueryProcessorMeasure measure;
@@ -64,20 +69,21 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	/**
 	 * Default constructor. Initialize event queue and writer
 	 */
+	private Thread thread;
+	
 	public AbstractQueryProcessor(QueryProcessorMeasure measure) {
 		// Set the global measurement instance
 		this.measure = measure;
 		// Initialize queue
 		this.eventqueue = new LinkedBlockingQueue<>();
-
-		// Initialize writer
-		try {
-			outputWriter = new BufferedWriter(new FileWriter(new File(
-					"result/query" + id + ".txt")));
-		} catch (IOException e) {
-			logger.error("Cannot open output file for " + id, e);
-			System.exit(-1);
-		}
+		this.resultqueue = new LinkedBlockingQueue<>();
+		// Launch writing thread 
+		ResultWriter resultWriter = new ResultWriter(id, resultqueue);
+		this.thread = new Thread(resultWriter);
+		thread.setName("QPWriter" + id);
+		thread.start();
+		
+		
 	}
 
 	public void setLatch(CountDownLatch latch) {
@@ -192,6 +198,13 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 *            the line to write as an answer
 	 */
 	protected void writeLine(String line) {
+		this.resultqueue.add(line); 
+
+
+	}
+
+	
+/*	protected synchronized void writeLine(String line){
 		try {
 			outputWriter.write(line);
 			outputWriter.newLine();
@@ -199,25 +212,24 @@ public abstract class AbstractQueryProcessor implements Runnable {
 			logger.error("Could not write new line for query processor " + id
 					+ ", line content " + line, e);
 		}
-
 	}
-
+*/
 	/**
 	 * Poison pill has been received, close output
 	 */
 	protected void finish() {
-		// Close writer
-		try {
-			outputWriter.flush();
-			outputWriter.close();
-		} catch (IOException e) {
-			logger.error("Cannot property close the output file for query "
-					+ id, e);
-		}
 		// Notify finish time
 		measure.notifyFinish(this.id);
+		// Send poison pill to QPWriter
+		this.resultqueue.add("DIE!!!");
+		// Ensure that QPWriter finishes
+		try{
+			this.thread.join();
+		}catch(InterruptedException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// Decrease latch count
 		latch.countDown();
 	}
-
 }
