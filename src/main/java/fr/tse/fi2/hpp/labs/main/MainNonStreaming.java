@@ -48,7 +48,10 @@ public class MainNonStreaming {
 		// Query processors
 		List<AbstractQueryProcessor> processors = new ArrayList<>();
 		// Add you query processor here
-		processors.add(new StupidAveragePrice(measure));
+		//processors.add(new StupidAveragePrice(measure));
+		
+		processors.add(new RouteMembershipProcessor(measure));
+		
 		// Register query processors
 		for (AbstractQueryProcessor queryProcessor : processors) {
 			dispatch.registerQueryProcessor(queryProcessor);
@@ -77,9 +80,9 @@ public class MainNonStreaming {
 		measure.setProcessedRecords(dispatch.getRecords());
 		measure.outputMeasure();
 		
-		DebsRecord record;
-		record = RouteMembershipProcessor.getRecord();
-		System.out.print("Recherche de la route : " + RouteMembershipProcessor.checkroute(record));
+		DebsRecord recordTest;
+		recordTest = RouteMembershipProcessor.getRecord();
+		System.out.println("Recherche de la route : " + RouteMembershipProcessor.checkroute(recordTest));
 
 	}
 
