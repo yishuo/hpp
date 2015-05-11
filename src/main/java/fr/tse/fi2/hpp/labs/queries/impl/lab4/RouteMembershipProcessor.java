@@ -13,6 +13,8 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 
+
+
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
@@ -36,7 +38,7 @@ public class RouteMembershipProcessor extends AbstractQueryProcessor {
 
 		ListeRoute.add(record);
 		com++;
-		if(com==20){
+		if(com==15){
 			recordTest = record;
 		}
 	}
@@ -45,18 +47,22 @@ public class RouteMembershipProcessor extends AbstractQueryProcessor {
 		return recordTest;
 	}
 
+	/*
+	 * check if 
+	 */
 	
 	public static boolean checkroute(DebsRecord record){
 		for(int i=0; i<ListeRoute.size(); i++){
-			if(record.getPickup_latitude() == ListeRoute.get(i).getPickup_latitude()
-			&& record.getPickup_longitude() == ListeRoute.get(i).getPickup_longitude()
-			&& record.getDropoff_latitude() == ListeRoute.get(i).getDropoff_latitude()
-			&& record.getDropoff_longitude() == ListeRoute.get(i).getDropoff_longitude()
-			&& record.getHack_license() == ListeRoute.get(i).getHack_license())
+			if((record.getPickup_longitude() == ListeRoute.get(i).getPickup_longitude())
+			&& (record.getPickup_latitude() == ListeRoute.get(i).getPickup_latitude())
+			&& (record.getDropoff_longitude() == ListeRoute.get(i).getDropoff_longitude())
+			&& (record.getDropoff_latitude() == ListeRoute.get(i).getDropoff_latitude())
+			&& (ListeRoute.get(i).getHack_license().equals(record.getHack_license())))
 			{
 				return true;
 			}
-		} return false;
+		} 
+	return false;
 	}   
 
 }

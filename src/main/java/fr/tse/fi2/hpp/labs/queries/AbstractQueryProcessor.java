@@ -1,9 +1,6 @@
 package fr.tse.fi2.hpp.labs.queries;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -198,7 +195,7 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 *            the line to write as an answer
 	 */
 	protected void writeLine(String line) {
-		this.resultqueue.add(line); 
+	//	this.resultqueue.add(line); 
 
 
 	}
@@ -221,7 +218,7 @@ public abstract class AbstractQueryProcessor implements Runnable {
 		// Notify finish time
 		measure.notifyFinish(this.id);
 		// Send poison pill to QPWriter
-		this.resultqueue.add("DIE!!!");
+		resultqueue.add("DIE!!!");
 		// Ensure that QPWriter finishes
 		try{
 			this.thread.join();

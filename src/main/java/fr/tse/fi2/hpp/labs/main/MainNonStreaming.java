@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +12,6 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
-import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
-import fr.tse.fi2.hpp.labs.queries.impl.lab1.StupidAveragePrice;
-import fr.tse.fi2.hpp.labs.queries.impl.lab1.SumQuery;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
 
 /**
@@ -42,16 +38,19 @@ public class MainNonStreaming {
 		// Init dispatcher and load everything
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/1000Records.csv");
+		
 		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 				"src/main/resources/data/sorted_data.csv");
 		logger.info("Finished parsing");
 		// Query processors
 		List<AbstractQueryProcessor> processors = new ArrayList<>();
 		// Add you query processor here
-		//processors.add(new StupidAveragePrice(measure));
 		
+//		processors.add(new StupidAveragePrice(measure));
+//		processors.add(new AverageQuery(measure));
+//		processors.add(new IncrementalAverage(measure));//我们加入了不同的线程
 		processors.add(new RouteMembershipProcessor(measure));
-		
+
 		// Register query processors
 		for (AbstractQueryProcessor queryProcessor : processors) {
 			dispatch.registerQueryProcessor(queryProcessor);
@@ -79,10 +78,18 @@ public class MainNonStreaming {
 		// Output measure and ratio per query processor
 		measure.setProcessedRecords(dispatch.getRecords());
 		measure.outputMeasure();
+/*		
+		float x1=(float) -73.971138;
+		float y1=(float)40.75898;
+		float x2=(float)-73.972206;
+		float y2=(float)40.752502;
+		String l1="6BA29E9A69B10F218C1509BEDD7410C2";
+		*/
+		DebsRecord record;
+		record = RouteMembershipProcessor.getRecord();
 		
-		DebsRecord recordTest;
-		recordTest = RouteMembershipProcessor.getRecord();
-		System.out.println("Recherche de la route : " + RouteMembershipProcessor.checkroute(recordTest));
+		System.out.print("recherche de route :" + RouteMembershipProcessor.checkroute(record));
+
 
 	}
 

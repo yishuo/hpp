@@ -3,8 +3,6 @@ package fr.tse.fi2.hpp.labs.main;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -13,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.StreamingDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
-import fr.tse.fi2.hpp.labs.queries.impl.IncrementalAverage;
-import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
-import fr.tse.fi2.hpp.labs.queries.impl.lab1.StupidAveragePrice;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
 
 /**
@@ -29,10 +24,6 @@ import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
  */
 public class MainStreaming {
 
-	private static Queue<AbstractQueryProcessor> processors 
-	= new ConcurrentLinkedQueue<AbstractQueryProcessor>();
-
-
 	final static Logger logger = LoggerFactory.getLogger(MainStreaming.class);
 
 	/**
@@ -44,21 +35,16 @@ public class MainStreaming {
 		QueryProcessorMeasure measure = new QueryProcessorMeasure();
 		// Init dispatcher
 		StreamingDispatcher dispatch = new StreamingDispatcher(
-				"src/main/resources/data/1000Records.csv");
+				"src/main/resources/data/1000Records.csv");//改这里
 
 		// Query processors
-//		List<AbstractQueryProcessor> processors = new ArrayList<>();
-		// Add you query processor here 
+		List<AbstractQueryProcessor> processors = new ArrayList<>();
+		// Add you query processor here
 		
-		
-	//	processors.add(new SimpleQuerySumEvent(measure));
-	//	processors.add(new StupidAveragePrice(measure));
-	//	processors.add(new IncrementalAverage(measure));
-		
+//		processors.add(new AverageQuery(measure));
+//		processors.add(new IncrementalAverage(measure));//我们加入了不同的线程
 		processors.add(new RouteMembershipProcessor(measure));
 
-		
-		
 		// Register query processors
 		for (AbstractQueryProcessor queryProcessor : processors) {
 			dispatch.registerQueryProcessor(queryProcessor);
