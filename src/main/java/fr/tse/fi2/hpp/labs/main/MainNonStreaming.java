@@ -12,7 +12,12 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
+import fr.tse.fi2.hpp.labs.queries.impl.IncrementalAverage;
+import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
+import fr.tse.fi2.hpp.labs.queries.impl.lab1.StupidAveragePrice;
+import fr.tse.fi2.hpp.labs.queries.impl.lab1.SumQuery;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
+import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
 
 /**
  * Main class of the program. Register your new queries here
@@ -24,6 +29,8 @@ import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
  * 
  */
 public class MainNonStreaming {
+	
+	static String recordTest=null;
 
 	final static Logger logger = LoggerFactory
 			.getLogger(MainNonStreaming.class);
@@ -36,11 +43,11 @@ public class MainNonStreaming {
 		// Init query time measure
 		QueryProcessorMeasure measure = new QueryProcessorMeasure();
 		// Init dispatcher and load everything
-//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-//				"src/main/resources/data/1000Records.csv");
-		
 		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-				"src/main/resources/data/sorted_data.csv");
+				"src/main/resources/data/1000Records.csv");
+		
+//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+//				"src/main/resources/data/sorted_data.csv");
 		logger.info("Finished parsing");
 		// Query processors
 		List<AbstractQueryProcessor> processors = new ArrayList<>();
@@ -49,8 +56,9 @@ public class MainNonStreaming {
 //		processors.add(new StupidAveragePrice(measure));
 //		processors.add(new AverageQuery(measure));
 //		processors.add(new IncrementalAverage(measure));
-		processors.add(new RouteMembershipProcessor(measure));
-
+//		processors.add(new RouteMembershipProcessor(measure));
+		processors.add(new BloomFiltres(measure));
+		
 		// Register query processors
 		for (AbstractQueryProcessor queryProcessor : processors) {
 			dispatch.registerQueryProcessor(queryProcessor);
@@ -85,10 +93,12 @@ public class MainNonStreaming {
 		float y2=(float)40.752502;
 		String l1="6BA29E9A69B10F218C1509BEDD7410C2";
 		*/
-		DebsRecord record;
-		record = RouteMembershipProcessor.getRecord();
+//		DebsRecord record;
+//		record = RouteMembershipProcessor.getRecord();
 		
-		System.out.print("recherche de route :" + RouteMembershipProcessor.checkroute(record));
+//		System.out.print("Recherche de la route :" + RouteMembershipProcessor.checkroute(record));
+		recordTest = BloomFiltres.getRecord();
+		System.out.print("Il est dans la liste :" + BloomFiltres.contain(recordTest));
 
 
 	}

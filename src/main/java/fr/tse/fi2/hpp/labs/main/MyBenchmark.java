@@ -1,11 +1,9 @@
 package fr.tse.fi2.hpp.labs.main;
 
-import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
-import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
@@ -17,7 +15,6 @@ import org.openjdk.jmh.annotations.Warmup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.runner.Runner;
@@ -35,19 +32,22 @@ import org.slf4j.LoggerFactory;
 //@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 
 
-@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
-@State(Scope.Thread)
+@Measurement(iterations = 5)
+@Warmup(iterations = 5)
+@State(Scope.Benchmark)
+//@State(Scope.Thread)
 
 public class MyBenchmark {
-	private DebsRecord recordTest;
+//	private DebsRecord recordTest;//pour 1 version
+	private String recordTest;
+	
 	final static Logger logger = LoggerFactory
 			.getLogger(MainNonStreaming.class);
 	
 
 	
-	@Setup
+	@Setup//是决定在benchmark前做还是后做
 	/**
 	 * 
 	 * initialise la liste des entiers pour chque iteration
@@ -64,15 +64,20 @@ public class MyBenchmark {
 			LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 					"src/main/resources/data/1000Records.csv");
 			
-	//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+			
+//			LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 	//				"src/main/resources/data/sorted_data.csv");
 			logger.info("Finished parsing");
 			// Query processors
 			List<AbstractQueryProcessor> processors = new ArrayList<>();
-			
 			// Add you query processor here
-			processors.add(new RouteMembershipProcessor(measure));
-      //      processors.add(new BloomFiltres(measure));
+			
+//			processors.add(new StupidAveragePrice(measure));
+//			processors.add(new AverageQuery(measure));
+//			processors.add(new IncrementalAverage(measure));
+//			processors.add(new RouteMembershipProcessor(measure));
+			processors.add(new BloomFiltres(measure));
+
 			// Register query processors
 			for (AbstractQueryProcessor queryProcessor : processors) {
 				dispatch.registerQueryProcessor(queryProcessor);
@@ -101,27 +106,24 @@ public class MyBenchmark {
 			measure.setProcessedRecords(dispatch.getRecords());
 			measure.outputMeasure();
 	/*		
-			float x1=(float)-73.971138;
+			float x1=(float) -73.971138;
 			float y1=(float)40.75898;
 			float x2=(float)-73.972206;
 			float y2=(float)40.752502;
 			String l1="6BA29E9A69B10F218C1509BEDD7410C2";
 			*/
-			recordTest = RouteMembershipProcessor.getRecord();
-		//    recordTest = BloomFiltres.getRecord();
-		 //   String recordTest1 = (String)recordTest;
+//			recordTest= RouteMembershipProcessor.getRecord();
+			recordTest = BloomFiltres.getRecord();
+			
+
+
+		
 	}
 
     @Benchmark
     public void testMethod1() {
-        // This is a demo/sample template for building your JMH benchmarks. Edit as needed.
-        // Put your benchmark code here.
-    	/**
-    	 * Actualiter compte the mean of the integer in<code>this.entier</code>
-    	 * @return the lean computed as the cumulated sum of integer in <code>entiers</code> 
-    	 */
-    	System.out.println("Route find : " + RouteMembershipProcessor.checkroute(recordTest));	
-    	//System.out.println("il est dans la liste: "+BloomFiltres.contain(recordTest1));
+ //   	System.out.println("Recherche de la Route : " + RouteMembershipProcessor.checkroute(recordTest));
+    	System.out.println("Il est dans la liste : " + BloomFiltres.contain(recordTest));
     }
 
 

@@ -1,8 +1,6 @@
 package fr.tse.fi2.hpp.labs.queries.impl.lab4;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Scope;
@@ -15,54 +13,63 @@ import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 
 
 
-@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 5)
+@Measurement(iterations = 5)
 @Fork(1)
-@State(Scope.Thread)
-
+@State(Scope.Benchmark)
 public class RouteMembershipProcessor extends AbstractQueryProcessor {
 
-	private static DebsRecord recordTest;
-	private int com=0;
 	private static ArrayList<DebsRecord> ListeRoute = new ArrayList<DebsRecord>();
-
+	private static DebsRecord recordTest;
+	private int compte=0;
+	// list <Debsrecord> recs =null
 	
+	
+	
+
 	public RouteMembershipProcessor(QueryProcessorMeasure measure) {
 		super(measure);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
-	protected void process(DebsRecord record){
-		// TODO Auto-generated constructor stub
+	protected void process(DebsRecord record) {
+		// TODO Auto-generated method stub	
+		
+		
 
-		ListeRoute.add(record);
-		com++;
-		if(com==15){
-			recordTest = record;
+			ListeRoute.add(record);
+			compte++;
+			if(compte==20){
+					recordTest = record;
+			}					
 		}
-	}
-
 	public static DebsRecord getRecord(){
 		return recordTest;
 	}
-
-	/*
-	 * check if 
+	
+	
+	/**
+	 * check if is this route
+	 * @param record
+	 * @return
 	 */
 	
-	public static boolean checkroute(DebsRecord record){
-		for(int i=0; i<ListeRoute.size(); i++){
+	public static boolean checkroute(DebsRecord record)
+	{/*for(Debsrecord debrecord :recs))
+	 */
+		for(int i=0;i<ListeRoute.size();i++){
 			if((record.getPickup_longitude() == ListeRoute.get(i).getPickup_longitude())
-			&& (record.getPickup_latitude() == ListeRoute.get(i).getPickup_latitude())
-			&& (record.getDropoff_longitude() == ListeRoute.get(i).getDropoff_longitude())
-			&& (record.getDropoff_latitude() == ListeRoute.get(i).getDropoff_latitude())
-			&& (ListeRoute.get(i).getHack_license().equals(record.getHack_license())))
+			   && (record.getPickup_latitude() == ListeRoute.get(i).getPickup_latitude())
+			   &&(record.getDropoff_longitude() == ListeRoute.get(i).getDropoff_longitude())
+			   && (record.getDropoff_latitude() == ListeRoute.get(i).getDropoff_latitude())
+			   &&(ListeRoute.get(i).getHack_license().equals(record.getHack_license()))) 
 			{
 				return true;
 			}
-		} 
-	return false;
-	}   
+				
+		}
+		return false;
+	}
 
 }

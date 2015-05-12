@@ -1,3 +1,3 @@
-Global execution time 46450ms
-Query 1 runtime: 5112ms
-Query 1 throughput: 391 events/second
+Global execution time 382ms
+Query 1 runtime: 104ms
+Query 1 throughput: 9 events/second
