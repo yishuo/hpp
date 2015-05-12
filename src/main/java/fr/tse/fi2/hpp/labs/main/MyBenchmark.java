@@ -4,6 +4,7 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
+import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -16,6 +17,7 @@ import org.openjdk.jmh.annotations.Warmup;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.runner.Runner;
@@ -33,10 +35,10 @@ import org.slf4j.LoggerFactory;
 //@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 
 
+@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
-@Measurement(iterations = 5)
-@Warmup(iterations = 5)
-@State(Scope.Benchmark)
+@State(Scope.Thread)
 
 public class MyBenchmark {
 	private DebsRecord recordTest;
@@ -45,7 +47,7 @@ public class MyBenchmark {
 	
 
 	
-	@Setup//是决定在benchmark前做还是后做
+	@Setup
 	/**
 	 * 
 	 * initialise la liste des entiers pour chque iteration
@@ -59,21 +61,18 @@ public class MyBenchmark {
 			// Init query time measure
 			QueryProcessorMeasure measure = new QueryProcessorMeasure();
 			// Init dispatcher and load everything
-//			LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-//					"src/main/resources/data/1000Records.csv");
-			
 			LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-					"src/main/resources/data/sorted_data.csv");
+					"src/main/resources/data/1000Records.csv");
+			
+	//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+	//				"src/main/resources/data/sorted_data.csv");
 			logger.info("Finished parsing");
 			// Query processors
 			List<AbstractQueryProcessor> processors = new ArrayList<>();
-			// Add you query processor here
 			
-//			processors.add(new StupidAveragePrice(measure));
-//			processors.add(new AverageQuery(measure));
-//			processors.add(new IncrementalAverage(measure));//我们加入了不同的线程
+			// Add you query processor here
 			processors.add(new RouteMembershipProcessor(measure));
-
+      //      processors.add(new BloomFiltres(measure));
 			// Register query processors
 			for (AbstractQueryProcessor queryProcessor : processors) {
 				dispatch.registerQueryProcessor(queryProcessor);
@@ -102,17 +101,15 @@ public class MyBenchmark {
 			measure.setProcessedRecords(dispatch.getRecords());
 			measure.outputMeasure();
 	/*		
-			float x1=(float) -73.971138;
+			float x1=(float)-73.971138;
 			float y1=(float)40.75898;
 			float x2=(float)-73.972206;
 			float y2=(float)40.752502;
 			String l1="6BA29E9A69B10F218C1509BEDD7410C2";
 			*/
 			recordTest = RouteMembershipProcessor.getRecord();
-			
-
-
-		
+		//    recordTest = BloomFiltres.getRecord();
+		 //   String recordTest1 = (String)recordTest;
 	}
 
     @Benchmark
@@ -121,13 +118,10 @@ public class MyBenchmark {
         // Put your benchmark code here.
     	/**
     	 * Actualiter compte the mean of the integer in<code>this.entier</code>
-    	 * @return the lean computed as the cumulated sum of integer in <code>entiers</code>
-    	 * 
-    	 * 运行的时候是先运行 mvn clean install ensuite 
+    	 * @return the lean computed as the cumulated sum of integer in <code>entiers</code> 
     	 */
-    	System.out.println("Route find : " + RouteMembershipProcessor.checkroute(recordTest));
-    	
-    	
+    	System.out.println("Route find : " + RouteMembershipProcessor.checkroute(recordTest));	
+    	//System.out.println("il est dans la liste: "+BloomFiltres.contain(recordTest1));
     }
 
 

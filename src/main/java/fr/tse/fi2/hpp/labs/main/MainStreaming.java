@@ -42,7 +42,7 @@ public class MainStreaming {
 		// Add you query processor here
 		
 //		processors.add(new AverageQuery(measure));
-//		processors.add(new IncrementalAverage(measure));//我们加入了不同的线程
+//		processors.add(new IncrementalAverage(measure));
 		processors.add(new RouteMembershipProcessor(measure));
 
 		// Register query processors
