@@ -7,6 +7,10 @@ import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 
 import java.util.BitSet;
 
+/**
+ * @author lv
+ *
+ */
 public class BloomFiltres extends AbstractQueryProcessor{
 
 	  private static DebsRecord recordTest;

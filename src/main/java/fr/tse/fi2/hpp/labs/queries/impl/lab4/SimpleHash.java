@@ -1,5 +1,9 @@
 package fr.tse.fi2.hpp.labs.queries.impl.lab4;
 
+/**
+ * @author lv
+ *
+ */
 public class SimpleHash {
 	 
 	     private int cap;

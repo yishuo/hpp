@@ -106,7 +106,7 @@ public class MyBenchmark {
 			measure.setProcessedRecords(dispatch.getRecords());
 			measure.outputMeasure();
 	/*		
-			float x1=(float) -73.971138;
+			float x1=(float)-73.971138;
 			float y1=(float)40.75898;
 			float x2=(float)-73.972206;
 			float y2=(float)40.752502;
