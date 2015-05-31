@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
+import fr.tse.fi2.hpp.labs.projet.Normalisation;
+import fr.tse.fi2.hpp.labs.projet.RouteFrequente;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.IncrementalAverage;
 import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
@@ -43,8 +45,15 @@ public class MainNonStreaming {
 		// Init query time measure
 		QueryProcessorMeasure measure = new QueryProcessorMeasure();
 		// Init dispatcher and load everything
+//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+//				"src/main/resources/data/1000Records.csv");
+		
 		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-				"src/main/resources/data/1000Records.csv");
+				"src/main/resources/data/SingleRecord.csv");
+		
+//		LoadFirstDispatcher diapatch = new LoadFirstDispatcher(
+//				"src/main/resources/data/test_01.csv");
+		
 		
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/sorted_data.csv");
@@ -57,7 +66,10 @@ public class MainNonStreaming {
 //		processors.add(new AverageQuery(measure));
 //		processors.add(new IncrementalAverage(measure));
 //		processors.add(new RouteMembershipProcessor(measure));
-		processors.add(new BloomFiltres(measure));
+//		processors.add(new BloomFiltres(measure));
+//		processors.add(new Normalisation(measure));
+		processors.add(new RouteFrequente(measure));
+	
 		
 		// Register query processors
 		for (AbstractQueryProcessor queryProcessor : processors) {
@@ -84,23 +96,35 @@ public class MainNonStreaming {
 			logger.error("Error while waiting for the program to end", e);
 		}
 		// Output measure and ratio per query processor
+		
+		
+	
 		measure.setProcessedRecords(dispatch.getRecords());
 		measure.outputMeasure();
-/*		
-		float x1=(float)-73.971138;
-		float y1=(float)40.75898;
-		float x2=(float)-73.972206;
-		float y2=(float)40.752502;
-		String l1="6BA29E9A69B10F218C1509BEDD7410C2";
-		*/
+/*
+//		float x1=(float)-73.971138;
+//		float y1=(float)40.75898;
+//		float x2=(float)-73.972206;
+//		float y2=(float)40.752502;
+//		String l1="6BA29E9A69B10F218C1509BEDD7410C2";
+
 //		DebsRecord record;
 //		record = RouteMembershipProcessor.getRecord();
 		
 //		System.out.print("Recherche de la route :" + RouteMembershipProcessor.checkroute(record));
-		recordTest = BloomFiltres.getRecord();
-		System.out.print("Il est dans la liste :" + BloomFiltres.contain(recordTest));
 
+		
+//		recordTest = BloomFiltres.getRecord();
+//		System.out.print("Il est dans la liste :" + BloomFiltres.contain(recordTest));
 
+        DebsRecord record = Normalisation.getRecord();
+		System.out.println(Normalisation.Normalisation(record));
+		
+*/
+		
+		Object record;
+//		System.out.println(RouteFrequente.process(record));
+		
 	}
 
 }
