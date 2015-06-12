@@ -1,6 +1,7 @@
 package fr.tse.fi2.hpp.labs.queries;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.GridPoint;
+import fr.tse.fi2.hpp.labs.beans.NewRecord;
 import fr.tse.fi2.hpp.labs.beans.Route;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.StreamingDispatcher;
@@ -136,6 +138,28 @@ public abstract class AbstractQueryProcessor implements Runnable {
 		GridPoint dropoff = convert(lat2, long2);
 		return new Route(pickup, dropoff);
 	}
+	
+	
+	protected NewRecord convertRecordToNewRoute(DebsRecord record) {
+		NewRecord newRecord ; 
+		// the time
+		long pickup_datatime = record.getPickup_datetime();
+		long dropoff_datatime = record.getDropoff_datetime();
+		// Convert pickup coordinates of new record into cell
+		float long1 = record.getPickup_longitude();
+		float lat1 = record.getPickup_latitude();
+		// Convert pickup coordinates of new record into cell
+		float long2 =record.getDropoff_longitude();
+		float lat2 =record.getDropoff_latitude();
+		//the times
+		int times = 0;
+		GridPoint pickup = convert(lat1, long1);
+		GridPoint dropoff = convert(lat2, long2);
+		newRecord = new NewRecord(pickup_datatime, dropoff_datatime, pickup, dropoff, times);
+		return newRecord;
+
+	}
+
 
 	/**
 	 * 
@@ -143,7 +167,7 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 * @param long1
 	 * @return The lat/long converted into grid coordinates
 	 */
-	private GridPoint convert(float lat1, float long1) {
+	protected GridPoint convert(float lat1, float long1) {
 		return new GridPoint(cellX(long1), cellY(lat1));
 	}
 
@@ -157,7 +181,9 @@ public abstract class AbstractQueryProcessor implements Runnable {
 
 		// double x=0;
 		double x_0 = -74.913585;
-		double delta_x = 0.005986 / 2;
+//		double delta_x = 0.005986 / 2;
+		double delta_x = 0.005986;
+		
 
 		// double cell_x;
 		Double cell_x = 1 + Math.floor(((x - x_0) / delta_x) + 0.5);
@@ -174,7 +200,9 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	private int cellY(double y) {
 
 		double y_0 = 41.474937;
-		double delta_y = 0.004491556 / 2;
+//		double delta_y = 0.004491556 / 2;
+		
+		double delta_y = 0.004491556;
 
 		Double cell_y = 1 + Math.floor(((y_0 - y) / delta_y) + 0.5);
 
@@ -195,7 +223,8 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 *            the line to write as an answer
 	 */
 	protected void writeLine(String line) {
-	//	this.resultqueue.add(line); 
+	//	this.resultqueue.add(line);
+		System.out.println(line);
 
 
 	}

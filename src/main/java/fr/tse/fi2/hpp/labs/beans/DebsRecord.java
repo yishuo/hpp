@@ -77,8 +77,10 @@ public class DebsRecord {
 
 	/** bridge and tunnel tolls in dollars. */
 	final float tolls_amount;
+	
 	/** total paid amount in dollars **/
 	final float total_amount;
+	
 	/**
 	 * Indicate if this is the end of the event stream
 	 */
@@ -260,6 +262,7 @@ public class DebsRecord {
 	public final float getTolls_amount() {
 		return tolls_amount;
 	}
+
 
 	/**
 	 * 

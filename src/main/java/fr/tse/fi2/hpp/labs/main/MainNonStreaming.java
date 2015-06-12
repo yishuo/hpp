@@ -12,7 +12,7 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
 import fr.tse.fi2.hpp.labs.projet.Normalisation;
-import fr.tse.fi2.hpp.labs.projet.RouteFrequente;
+import fr.tse.fi2.hpp.labs.projet.RoutesFrequente;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.IncrementalAverage;
 import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
@@ -30,6 +30,7 @@ import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
  * @author Julien
  * 
  */
+
 public class MainNonStreaming {
 	
 	static String recordTest=null;
@@ -48,15 +49,19 @@ public class MainNonStreaming {
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/1000Records.csv");
 		
-		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-				"src/main/resources/data/SingleRecord.csv");
-		
-//		LoadFirstDispatcher diapatch = new LoadFirstDispatcher(
-//				"src/main/resources/data/test_01.csv");
-		
+//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+//				"src/main/resources/data/SingleRecord.csv");
+
 		
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/sorted_data.csv");
+		
+		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+				"src/main/resources/data/test_02.csv");
+		
+//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+//				"src/main/resources/data/test_03.csv");
+
 		logger.info("Finished parsing");
 		// Query processors
 		List<AbstractQueryProcessor> processors = new ArrayList<>();
@@ -68,7 +73,8 @@ public class MainNonStreaming {
 //		processors.add(new RouteMembershipProcessor(measure));
 //		processors.add(new BloomFiltres(measure));
 //		processors.add(new Normalisation(measure));
-		processors.add(new RouteFrequente(measure));
+		processors.add(new RoutesFrequente(measure));
+//		processors.add(new AreasProfitable(measure));
 	
 		
 		// Register query processors
@@ -119,12 +125,8 @@ public class MainNonStreaming {
 
         DebsRecord record = Normalisation.getRecord();
 		System.out.println(Normalisation.Normalisation(record));
-		
 */
-		
-		Object record;
-//		System.out.println(RouteFrequente.process(record));
-		
+//		System.out.println(RoutesFrequente.);		
 	}
 
 }
