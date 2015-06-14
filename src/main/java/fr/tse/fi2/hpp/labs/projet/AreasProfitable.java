@@ -116,6 +116,7 @@ public class AreasProfitable extends AbstractQueryProcessor {
 	     */
 	    Set<String> listLicence =new  HashSet<String>();
 	    listLicence.clear();
+	    
 	    for(int i=0;i<listDropoff.size();i++){
 	    	listLicence.add(listDropoff.get(i).getHack_license());
 	    	}
@@ -133,18 +134,26 @@ public class AreasProfitable extends AbstractQueryProcessor {
 	    			area.setNbTaxisEmpty(area.getNbTaxisEmpty()+1);
 	    			}																	
 	    		}
-	    	}			
+	    	}
+	    
 	    for(int i = 0;i<listArea.size();i++){
 	    	listArea.get(i).calculprofitability();
 	    	}	
+	    
 	    // Finir.
 	    tempsFini = System.nanoTime();
 	    delay = tempsFini - tempsCommence;
 	    
 	    // output the result.
 	    for(int i=0;i<listArea.size();i++){
-	    	System.out.println("[unit : " + listArea.get(i).getunit() + "]" +
-							   " [Taxi Empty : " + listArea.get(i).getNbTaxisEmpty() + "]" + 
+/*	    	System.out.println("[unit : " + listArea.get(i).getunit() + "]" +
+							   " [Taxis Vides : " + listArea.get(i).getNbTaxisEmpty() + "]" + 
+							   " [Median profit : " + listArea.get(i).mediane.getMediane() + "]" + 
+							   " [Profitability : "  + listArea.get(i).getProfitability() + "]" +
+							   " [Delay : " + delay + "]");
+*/							   
+	    	this.writeLine("[unit : " + listArea.get(i).getunit() + "]" +
+							   " [Taxis Vides : " + listArea.get(i).getNbTaxisEmpty() + "]" + 
 							   " [Median profit : " + listArea.get(i).mediane.getMediane() + "]" + 
 							   " [Profitability : "  + listArea.get(i).getProfitability() + "]" +
 							   " [Delay : " + delay + "]");
@@ -156,11 +165,11 @@ public class AreasProfitable extends AbstractQueryProcessor {
 	{
 		while (true)
 		{
-			DebsRecord elem = list15.getFirst();
-			if (elem.getDropoff_datetime() < temps)
+			DebsRecord record = list15.getFirst();
+			if (record.getDropoff_datetime() < temps)
 			{
-				String unit = convertTounit(elem.getPickup_latitude(), elem.getPickup_longitude());
-				listAreaProfitable.get(unit).supprime(elem.getFare_amount() + elem.getTip_amount());
+				String unit = convertTounit(record.getPickup_latitude(), record.getPickup_longitude());
+				listAreaProfitable.get(unit).supprime(record.getFare_amount() + record.getTip_amount());
 				list15.removeFirst();
 			}
 			else 

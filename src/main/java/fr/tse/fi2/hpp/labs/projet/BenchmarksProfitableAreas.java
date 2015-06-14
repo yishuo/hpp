@@ -1,4 +1,4 @@
-package fr.tse.fi2.hpp.labs.projet;
+/*package fr.tse.fi2.hpp.labs.projet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,3 +83,4 @@ public class BenchmarksProfitableAreas {
 	    }
 
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package fr.tse.fi2.hpp.labs.benchmark;
 
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
@@ -43,15 +44,15 @@ public class MyBenchmark {
 	final static Logger logger = LoggerFactory
 			.getLogger(MainNonStreaming.class);
 	
-	/**
-	 * initialise la liste des entiers pour chque iteration
-	 * suivant la valeur de <code>n</code>.
-	 */
+	
+	 // initialise la liste des entiers pour chque iteration
+	 // suivant la valeur de <code>n</code>.
+	 
 	public void init(){
-		/**
-		 * @param args
-		 * @throws IOException
-		 */
+		
+		 // @param args
+		 // @throws IOException
+		 
 			// Init query time measure
 			QueryProcessorMeasure measure = new QueryProcessorMeasure();
 			// Init dispatcher and load everything
@@ -116,3 +117,4 @@ public class MyBenchmark {
         new Runner(opt).run();
     }
 }
+*/

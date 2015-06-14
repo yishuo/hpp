@@ -1,4 +1,6 @@
+/*
 package fr.tse.fi2.hpp.labs.projet;
+ 
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,3 +85,4 @@ public class BenchmarksRoutesFrequente {
 	    }
 
 }
+*/
