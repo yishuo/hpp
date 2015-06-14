@@ -1,4 +1,4 @@
-package fr.tse.fi2.hpp.labs.queries;
+package fr.tse.fi2.hpp.labs.queries.impl.lab3;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,11 +9,15 @@ import java.util.concurrent.BlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
+
+/*
+ * Récrire la fonction de output.
+ */
 public class ResultWriter implements Runnable{
 	
 	final static Logger logger = LoggerFactory.getLogger(AbstractQueryProcessor.class);
 
-	
 	private BufferedWriter outputWriter;
 	private int id;
 	private final BlockingQueue<String> resultqueue;
@@ -29,8 +33,6 @@ public class ResultWriter implements Runnable{
 			logger.error("Cannot open output file for " + id, e);
 			System.exit(-1);
 		}
-		
-		
 	}
 	
 	protected void writeLine(String line) {
@@ -41,7 +43,6 @@ public class ResultWriter implements Runnable{
 			logger.error("Could not write new line for query processor " + id
 					+ ", line content " + line, e);
 		}
-
 	}
 
 	@Override
@@ -74,8 +75,4 @@ public class ResultWriter implements Runnable{
 					+ id, e);
 		}
 	}
-	
-	
-	
-
 }

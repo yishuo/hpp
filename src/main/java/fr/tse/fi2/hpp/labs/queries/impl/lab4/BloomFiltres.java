@@ -15,7 +15,6 @@ public class BloomFiltres extends AbstractQueryProcessor{
 
 	  private static DebsRecord recordTest;
 	  private int com=0;
-	  
       private static final int DEFAULT_SIZE = 14378;//Initialisation de m
       private static final int[] seeds = new int[] { 5, 7, 11, 13, 31, 37, 61, 67, 71, 79};
       private static BitSet bits = new BitSet(DEFAULT_SIZE);
@@ -33,7 +32,6 @@ public class BloomFiltres extends AbstractQueryProcessor{
 	@Override
 	protected void process(DebsRecord record) {
 		// TODO Auto-generated method stub	
-		
 			String recordstring =null;
 			recordstring += record.getPickup_longitude();
 			recordstring += record.getPickup_latitude();

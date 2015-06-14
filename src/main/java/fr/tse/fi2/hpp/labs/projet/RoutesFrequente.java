@@ -2,33 +2,31 @@ package fr.tse.fi2.hpp.labs.projet;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.HashMultiset;
-import com.google.common.collect.ImmutableMultiset;
 import com.google.common.collect.Multiset;
-import com.google.common.collect.Multisets;
-
 import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.NewRecord;
 import fr.tse.fi2.hpp.labs.beans.Route;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 
+/**
+ * La processus de Query1.
+ */
+
 public class RoutesFrequente extends AbstractQueryProcessor {
     
 	private List<DebsRecord> recordList;
-	private Multiset<Route> listRoute;
+	private LinkedList<Route> listRoute;
 	private List<NewRecord> newRecordList;
 	private List<NewRecord> newRecordList2;
 	private Multiset<Integer> timesList;
-	private List<NewRecord> listResultat;
 
 
 	private String resultat;
@@ -41,22 +39,15 @@ public class RoutesFrequente extends AbstractQueryProcessor {
  		super(measure);
 		// TODO Auto-generated constructor stub
 		this.recordList = new LinkedList<DebsRecord>();
-		this.listRoute = HashMultiset.create();
-		this.newRecordList = new LinkedList<NewRecord>();
-		this.newRecordList2 = new LinkedList<NewRecord>();
-		this.timesList = HashMultiset.create();
-		this.listResultat = new LinkedList<NewRecord>();
-//		this.comparatorlist = new ComparatorList();
  	}
 	
 	protected void process(DebsRecord record) {
 		// TODO Auto-generated method stub
-
-
-    	this.listRoute = HashMultiset.create();	
+		this.listRoute = new LinkedList<Route>();;
+		this.newRecordList = new LinkedList<NewRecord>();
+		this.newRecordList2 = new LinkedList<NewRecord>();
+		this.timesList = HashMultiset.create();
  		recordList.add(record);
-
-		
 		
 		//Obtenir le temps de 'pickup' et 'dropoff' updated;
 		Date temps_pickup = new Date(record.getPickup_datetime());
@@ -80,45 +71,66 @@ public class RoutesFrequente extends AbstractQueryProcessor {
 				}
 			}
 			
-			
-			
-			
-			
-			for(DebsRecord recordTest : recordList){
-				newRecordList.add(convertRecordToNewRoute(recordTest));
-//				System.out.println("asdasdsad"+convertRecordToNewRoute(recordTest).getDropoff().getX());
-			}
-
-			
+			for(int i=0;i<recordList.size();i++){
+				newRecordList.add(convertRecordToNewRoute(recordList.get(i)));
+			}						
+	
 			listRoute.clear();
 			for (DebsRecord indexRecord : recordList){
  				Route indexRoute = convertRecordToRoute(indexRecord);
-//				System.out.println("asdasdsad"+convertRecordToRoute(indexRecord).getDropoff().getX());
 				listRoute.add(indexRoute);				
-			} 
-			
-//			Set<Route> highestCountFirst = Multisets.copyHighestCountFirst(listRoute).elementSet();
-			ImmutableMultiset<Route> highestCountFirst = Multisets.copyHighestCountFirst(listRoute);
+			} 			
+			Set<Route> highestCountFirst =new  HashSet<Route>();
+			highestCountFirst.clear();
+			highestCountFirst.addAll(listRoute);
+			List<Route> highestCountSecond = new LinkedList<Route>();
+			highestCountSecond.clear();		
+			highestCountSecond.addAll(highestCountFirst);
 
-//            System.out.println(highestCountFirst.size());
-			for(Route route : highestCountFirst){
+			List<Route> TriRoute = new LinkedList<Route>();
+			TriRoute.clear();
+			for(int i=newRecordList.size();i>0;i--){
+				Route route = new Route (newRecordList.get(i-1).getPickup(),newRecordList.get(i-1).getDropoff());
+				for(int j=0;j<highestCountSecond.size();j++){
+					Route route1 = highestCountSecond.get(j);					
+					if(     
+							(route1.getPickup().getX())==(route.getPickup().getX())
+							&& ((route1.getDropoff().getX())==(route.getDropoff().getX()))
+						    && ((route1.getPickup().getY())==(route.getPickup().getY()))
+						    && ((route1.getDropoff().getY())==(route.getDropoff().getY()))		   
+							)
+						    
+					{
+						TriRoute.add(route);						
+		    			highestCountSecond.remove(route1);	
+						break;
+					}
+				}
+				
+
+				if (highestCountFirst.isEmpty())
+				break;	
+			}
+/*
+			for(Route route : TriRoute){
+				System.out.println("  get pickup  "+route.getPickup().getX()+route.getPickup().getY()
+						+"  get drop off "+route.getDropoff().getX()+route.getDropoff().getY());
+			}
+*/
+
+			for(int i=0;i<TriRoute.size();i++){
+				Route route =TriRoute.get(i);				
 				int nTimes = 0;
 				long timeStart = 0;
 				long timeLast = 0;
 
-				for(NewRecord newRecord : newRecordList){
-	//				System.out.println("newrecordY+"+newRecord.getDropoff().getY());
-	//				System.out.println("newrecordX+"+newRecord.getDropoff().getX());
-		//			System.out.println("routeY+"+route.getDropoff().getY());
-		//			System.out.println("routeX+"+route.getDropoff().getX());
-
-					
+				for(NewRecord newRecord : newRecordList){					
 					if(((route.getPickup()).getX()==(newRecord.getPickup().getX()))
 							&&((route.getPickup()).getY()==(newRecord.getPickup().getY())
 							&& (route.getDropoff().getX()==newRecord.getDropoff().getX())
 							&&(route.getDropoff().getY()==newRecord.getDropoff().getY()))){
 						nTimes += 1;
-						if(newRecord.getDropoff_datetime() >= timeLast){
+						if((new Date(newRecord.getDropoff_datetime()).compareTo(new Date(timeLast)))>0){
 							timeStart = newRecord.getPickup_datetime();
 							timeLast = newRecord.getDropoff_datetime();
 						} 
@@ -126,60 +138,20 @@ public class RoutesFrequente extends AbstractQueryProcessor {
 				}
 				newRecordList2.add(new NewRecord(timeStart,timeLast,route.getPickup(),route.getDropoff(),nTimes));
                 timesList.add(nTimes);
-//            			System.out.println("times+++"+nTimes);
 			}
-
-	//		System.out.println("size list2"+newRecordList2.size());
-			ComparateurTime comtime =new ComparateurTime();
-			newRecordList2=comtime.freshTime(newRecordList2);
+/*			
 			for(NewRecord newrecord:newRecordList2){
-				
-				
+				System.out.println("NewrecordList2:"+newrecord.getTimes()
+						+"  getdropoff time  "+temps_outputformat.format(new Date(newrecord.getDropoff_datetime()))
+						+"  get pickup  "+newrecord.getPickup().getX()+newrecord.getPickup().getY()
+						+"  get drop off "+newrecord.getDropoff().getX()+newrecord.getDropoff().getY());
 			}
-			
-
-
-			Set<Integer> timesList2 = Multisets.copyHighestCountFirst(timesList).elementSet();
-			int[] timesList3 = new int[timesList2.size()] ;		
-			int a=0;
-			for(Integer index: timesList2){
-				timesList3[a]=index;
-				a++;
-				}
-			timesList3=InsertSort.InsertSort(timesList3);
-
-			int nAll=0;
-			for(Integer index: timesList3){
-				System.out.println(index);
-				int n = 0;
-				for(NewRecord newRecord : newRecordList2){
-					if(index == newRecord.getTimes()){
-						n += 1;
-						nAll += 1;
-					}	
-				}
-		//	    System.out.println(n);
-		//	    System.out.println(nAll);
-				ComparateurList comList= new ComparateurList();
-				listResultat = comList.freshList(newRecordList2, n, nAll);
-				
-				if(nAll >= 10){
-					break;
-				}
-
-			}
-
-
-
-			
-			
-			
-			
-			
+*/							
+						
 			
 			//Ajouter les routes de listRoute à resultat, si moins de 10, ajouter 'NULL'; 
 			int i=1;
-			for(NewRecord newRecord: listResultat ){
+			for(NewRecord newRecord: newRecordList2 ){
 
  				if(i<11){
 					
@@ -204,3 +176,4 @@ public class RoutesFrequente extends AbstractQueryProcessor {
 		this.writeLine(resultat + ", " + delay);
 	}
 }
+	

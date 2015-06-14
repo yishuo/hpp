@@ -1,31 +1,8 @@
 package fr.tse.fi2.hpp.labs.beans;
 
 /**
- * Immutable Bean that maps (with almost no processing) a CSV record. The only
- * processing is the pickup/dropoff dates being transformed into unix timestamps.
- * 
- * <pre>
- * medallion	an md5sum of the identifier of the taxi - vehicle bound
- * hack_license	an md5sum of the identifier for the taxi license
- * pickup_datetime	time when the passenger(s) were picked up
- * dropoff_datetime	time when the passenger(s) were dropped off
- * trip_time_in_secs	duration of the trip
- * trip_distance	trip distance in miles
- * pickup_longitude	longitude coordinate of the pickup location
- * pickup_latitude	latitude coordinate of the pickup location
- * dropoff_longitude	longitude coordinate of the drop-off location
- * dropoff_latitude	latitude coordinate of the drop-off location
- * payment_type	the payment method - credit card or cash
- * fare_amount	fare amount in dollars
- * surcharge	surcharge in dollars
- * mta_tax	    tax in dollars
- * tip_amount	tip in dollars
- * tolls_amount	bridge and tunnel tolls in dollars
- * total_amount	total paid amount in dollars
- * 
- * </pre>
- * 
- * @author Julien
+ * Créer une nouvelle classe pour sauvegarder un nouveau DebsRecord
+ * (qui contient pickup_datatime, dropoff_datatime, pickup(GridPoint), dropoff(GridPoint), times)  
  */
 public class NewRecord {
 
@@ -34,15 +11,7 @@ public class NewRecord {
 
 	/** time when the passenger(s) were dropped off. */
 	final long dropoff_datetime;
-/*
-	final int pickup_longitude_grid;
 
-	final int pickup_latitude_grid;
-
-	final int dropoff_longitude_grid;
-
-	final int dropoff_latitude_grid;
-*/	
 	final GridPoint pickup ;
 	
 	final GridPoint dropoff;
@@ -98,13 +67,6 @@ public class NewRecord {
 		return times;
 	}
 	
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 			return "DebsRecord [pickup_datetime=" + pickup_datetime

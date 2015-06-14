@@ -84,5 +84,30 @@ public class Route {
 	private boolean valid(int x, int gridsize) {
 		return x > 0 && x <= gridsize;
 	}
+	@Override
+	public boolean equals(Object o)   
+    {   
+        if (this == o)   
+        {   
+            return true;   
+        }   
+        if (o.getClass() == Route.class)   
+        {   
+        	Route n = (Route)o;
+            return ((n.getPickup().equals(pickup))&&(n.getDropoff().equals(dropoff)));   
+        }   
+        return false;   
+    }   
+	@Override   
+    // Récrire la fonction de hashCode. 
+    public int hashCode()   
+    { 
+		final int prime = 233;
+		int result = 1;
+		result = prime * result + ((pickup == null) ? 0 : pickup.hashCode());
+		result = prime * result + ((dropoff == null) ? 0 : dropoff.hashCode());
+        return result;   
+    }  
+	
 
 }

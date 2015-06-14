@@ -11,8 +11,6 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 
-
-
 @Warmup(iterations = 5)
 @Measurement(iterations = 5)
 @Fork(1)
@@ -23,9 +21,6 @@ public class RouteMembershipProcessor extends AbstractQueryProcessor {
 	private static DebsRecord recordTest;
 	private int compte=0;
 	// list <Debsrecord> recs =null
-	
-	
-	
 
 	public RouteMembershipProcessor(QueryProcessorMeasure measure) {
 		super(measure);
@@ -35,9 +30,6 @@ public class RouteMembershipProcessor extends AbstractQueryProcessor {
 	@Override
 	protected void process(DebsRecord record) {
 		// TODO Auto-generated method stub	
-		
-		
-
 			ListeRoute.add(record);
 			compte++;
 			if(compte==20){
@@ -66,10 +58,8 @@ public class RouteMembershipProcessor extends AbstractQueryProcessor {
 			   &&(ListeRoute.get(i).getHack_license().equals(record.getHack_license()))) 
 			{
 				return true;
-			}
-				
+			}			
 		}
 		return false;
 	}
-
 }

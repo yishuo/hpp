@@ -14,7 +14,6 @@ public class SimpleHash {
 	         this.seed = seed;
 	     }
 
-	
 	     public int hash(String value) {
 	         int result = 0;
 	         int len = value.length();

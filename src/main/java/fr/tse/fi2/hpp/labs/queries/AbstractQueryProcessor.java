@@ -1,7 +1,5 @@
 package fr.tse.fi2.hpp.labs.queries;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,7 +13,8 @@ import fr.tse.fi2.hpp.labs.beans.GridPoint;
 import fr.tse.fi2.hpp.labs.beans.NewRecord;
 import fr.tse.fi2.hpp.labs.beans.Route;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
-import fr.tse.fi2.hpp.labs.dispatcher.StreamingDispatcher;
+import fr.tse.fi2.hpp.labs.dispatcher.*;
+import fr.tse.fi2.hpp.labs.queries.impl.lab3.ResultWriter;
 
 /**
  * Every query must extend this class that provides basic functionalities such
@@ -43,19 +42,18 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 * Unique ID of the query processor
 	 */
 	private final int id = COUNTER.incrementAndGet();
-	/**
-	 * Writer to write the output of the queries
-	 */
-	private BufferedWriter outputWriter;
+	
 	/**
 	 * Internal queue of events
 	 */
 	public final BlockingQueue<DebsRecord> eventqueue;
+	
+	
+	
 	/**
-	 * Internal queue of results
+	 * Internal queue of result
 	 */
 	public final BlockingQueue<String> resultqueue;
-	
 	/**
 	 * Global measurement
 	 */
@@ -64,24 +62,22 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 * For synchronisation purpose
 	 */
 	private CountDownLatch latch;
+	
+	private Thread thread;
 
 	/**
 	 * Default constructor. Initialize event queue and writer
 	 */
-	private Thread thread;
-	
 	public AbstractQueryProcessor(QueryProcessorMeasure measure) {
 		// Set the global measurement instance
 		this.measure = measure;
 		// Initialize queue
 		this.eventqueue = new LinkedBlockingQueue<>();
 		this.resultqueue = new LinkedBlockingQueue<>();
-		// Launch writing thread 
-		ResultWriter resultWriter = new ResultWriter(id, resultqueue);
-		this.thread = new Thread(resultWriter);
-		thread.setName("QPWriter" + id);
+		ResultWriter result = new ResultWriter(id, resultqueue);
+		this.thread= new Thread(result);
+		thread.setName("QPWriter"+id);
 		thread.start();
-		
 		
 	}
 
@@ -139,7 +135,7 @@ public abstract class AbstractQueryProcessor implements Runnable {
 		return new Route(pickup, dropoff);
 	}
 	
-	
+	// Récrire une nouvelle fonction pour convertir NewRecord. 
 	protected NewRecord convertRecordToNewRoute(DebsRecord record) {
 		NewRecord newRecord ; 
 		// the time
@@ -159,7 +155,26 @@ public abstract class AbstractQueryProcessor implements Runnable {
 		return newRecord;
 
 	}
-
+	
+	// Query2 et unité est 250m. 
+	protected String convertTounit(float latitude, float longitude)
+	{
+		// longueur et largeur de chaque unité.
+		double stepX = 0.005986/2;
+		double stepY = 0.004491556/2;
+		
+		// le point du début. 
+		double startX = -74.913585;
+		double startY = 41.474937;
+		
+		// la normalisation.
+		double unitX = (longitude - startX) / stepX;
+		double unitY = (startY - latitude) / stepY;
+		Integer X = (int) (Math.round(unitX) + 1);
+		Integer Y = (int) (Math.round(unitY) + 1);
+		String result = X.toString() + "." + Y.toString();
+		return result;
+	}
 
 	/**
 	 * 
@@ -167,7 +182,7 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 * @param long1
 	 * @return The lat/long converted into grid coordinates
 	 */
-	protected GridPoint convert(float lat1, float long1) {
+	private GridPoint convert(float lat1, float long1) {
 		return new GridPoint(cellX(long1), cellY(lat1));
 	}
 
@@ -178,16 +193,11 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 * @return
 	 */
 	private int cellX(float x) {
-
 		// double x=0;
 		double x_0 = -74.913585;
-//		double delta_x = 0.005986 / 2;
-		double delta_x = 0.005986;
-		
-
+		double delta_x = 0.005986;// / 2;
 		// double cell_x;
 		Double cell_x = 1 + Math.floor(((x - x_0) / delta_x) + 0.5);
-
 		return cell_x.intValue();
 	}
 
@@ -198,16 +208,10 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 * @return
 	 */
 	private int cellY(double y) {
-
 		double y_0 = 41.474937;
-//		double delta_y = 0.004491556 / 2;
-		
-		double delta_y = 0.004491556;
-
+		double delta_y = 0.004491556;// / 2;
 		Double cell_y = 1 + Math.floor(((y_0 - y) / delta_y) + 0.5);
-
 		return cell_y.intValue();
-
 	}
 
 	/**
@@ -223,39 +227,52 @@ public abstract class AbstractQueryProcessor implements Runnable {
 	 *            the line to write as an answer
 	 */
 	protected void writeLine(String line) {
-	//	this.resultqueue.add(line);
-		System.out.println(line);
-
-
-	}
-
-	
-/*	protected synchronized void writeLine(String line){
-		try {
+/*		try {
 			outputWriter.write(line);
 			outputWriter.newLine();
 		} catch (IOException e) {
 			logger.error("Could not write new line for query processor " + id
 					+ ", line content " + line, e);
 		}
-	}
 */
+		System.out.println(line);
+		resultqueue.add(line);
+		
+	}
+	
+	
+	
+	
+
 	/**
 	 * Poison pill has been received, close output
 	 */
 	protected void finish() {
+		// Close writer
+	/*	try {
+			outputWriter.flush();
+			outputWriter.close();
+		} catch (IOException e) {
+			logger.error("Cannot property close the output file for query "
+					+ id, e);
+		}*/
 		// Notify finish time
 		measure.notifyFinish(this.id);
-		// Send poison pill to QPWriter
 		resultqueue.add("DIE!!!");
-		// Ensure that QPWriter finishes
-		try{
+		try {
 			this.thread.join();
-		}catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		// Decrease latch count
 		latch.countDown();
+
+
 	}
+	
+
+
+
 }

@@ -1,7 +1,8 @@
-package fr.tse.fi2.hpp.labs.main;
+package fr.tse.fi2.hpp.labs.benchmark;
 
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
+import fr.tse.fi2.hpp.labs.main.MainNonStreaming;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
 
@@ -27,10 +28,7 @@ import org.slf4j.LoggerFactory;
 //@BenchmarkMode(Mode.AverageTime)
 //@OutputTimeUnit(TimeUnit.NANOSECONDS)
 //@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-
-
 //@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-
 
 @Fork(1)
 @Measurement(iterations = 5)
@@ -45,11 +43,7 @@ public class MyBenchmark {
 	final static Logger logger = LoggerFactory
 			.getLogger(MainNonStreaming.class);
 	
-
-	
-	@Setup//是决定在benchmark前做还是后做
 	/**
-	 * 
 	 * initialise la liste des entiers pour chque iteration
 	 * suivant la valeur de <code>n</code>.
 	 */
@@ -105,19 +99,8 @@ public class MyBenchmark {
 			// Output measure and ratio per query processor
 			measure.setProcessedRecords(dispatch.getRecords());
 			measure.outputMeasure();
-	/*		
-			float x1=(float)-73.971138;
-			float y1=(float)40.75898;
-			float x2=(float)-73.972206;
-			float y2=(float)40.752502;
-			String l1="6BA29E9A69B10F218C1509BEDD7410C2";
-			*/
 //			recordTest= RouteMembershipProcessor.getRecord();
-			recordTest = BloomFiltres.getRecord();
-			
-
-
-		
+			recordTest = BloomFiltres.getRecord();		
 	}
 
     @Benchmark
@@ -125,7 +108,6 @@ public class MyBenchmark {
  //   	System.out.println("Recherche de la Route : " + RouteMembershipProcessor.checkroute(recordTest));
     	System.out.println("Il est dans la liste : " + BloomFiltres.contain(recordTest));
     }
-
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()

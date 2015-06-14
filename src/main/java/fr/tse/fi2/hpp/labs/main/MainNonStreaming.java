@@ -11,13 +11,15 @@ import org.slf4j.LoggerFactory;
 import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
-import fr.tse.fi2.hpp.labs.projet.Normalisation;
+import fr.tse.fi2.hpp.labs.projet.Areas;
+import fr.tse.fi2.hpp.labs.projet.ProfitableAreas;
 import fr.tse.fi2.hpp.labs.projet.RoutesFrequente;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
-import fr.tse.fi2.hpp.labs.queries.impl.IncrementalAverage;
 import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
+import fr.tse.fi2.hpp.labs.queries.impl.lab1.IncrementalAveragePrice;
 import fr.tse.fi2.hpp.labs.queries.impl.lab1.StupidAveragePrice;
 import fr.tse.fi2.hpp.labs.queries.impl.lab1.SumQuery;
+import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomGuava;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
 
@@ -46,8 +48,8 @@ public class MainNonStreaming {
 		// Init query time measure
 		QueryProcessorMeasure measure = new QueryProcessorMeasure();
 		// Init dispatcher and load everything
-//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-//				"src/main/resources/data/1000Records.csv");
+		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+				"src/main/resources/data/1000Records.csv");
 		
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/SingleRecord.csv");
@@ -56,8 +58,8 @@ public class MainNonStreaming {
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/sorted_data.csv");
 		
-		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
-				"src/main/resources/data/test_02.csv");
+//		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
+//				"src/main/resources/data/test_02.csv");
 		
 //		LoadFirstDispatcher dispatch = new LoadFirstDispatcher(
 //				"src/main/resources/data/test_03.csv");
@@ -69,12 +71,13 @@ public class MainNonStreaming {
 		
 //		processors.add(new StupidAveragePrice(measure));
 //		processors.add(new AverageQuery(measure));
-//		processors.add(new IncrementalAverage(measure));
+//		processors.add(new IncrementalAveragePrice(measure));
 //		processors.add(new RouteMembershipProcessor(measure));
 //		processors.add(new BloomFiltres(measure));
-//		processors.add(new Normalisation(measure));
-		processors.add(new RoutesFrequente(measure));
-//		processors.add(new AreasProfitable(measure));
+//		processors.add(new BloomGuava(measure));
+//		processors.add(new RoutesFrequente(measure));
+//		processors.add(new IncrementalAverage(measure));
+		processors.add(new ProfitableAreas(measure));
 	
 		
 		// Register query processors
@@ -102,31 +105,17 @@ public class MainNonStreaming {
 			logger.error("Error while waiting for the program to end", e);
 		}
 		// Output measure and ratio per query processor
-		
-		
 	
 		measure.setProcessedRecords(dispatch.getRecords());
 		measure.outputMeasure();
-/*
-//		float x1=(float)-73.971138;
-//		float y1=(float)40.75898;
-//		float x2=(float)-73.972206;
-//		float y2=(float)40.752502;
-//		String l1="6BA29E9A69B10F218C1509BEDD7410C2";
 
 //		DebsRecord record;
 //		record = RouteMembershipProcessor.getRecord();
 		
 //		System.out.print("Recherche de la route :" + RouteMembershipProcessor.checkroute(record));
-
-		
+	
 //		recordTest = BloomFiltres.getRecord();
 //		System.out.print("Il est dans la liste :" + BloomFiltres.contain(recordTest));
-
-        DebsRecord record = Normalisation.getRecord();
-		System.out.println(Normalisation.Normalisation(record));
-*/
-//		System.out.println(RoutesFrequente.);		
 	}
 
 }

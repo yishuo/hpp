@@ -12,6 +12,7 @@ import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.StreamingDispatcher;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomFiltres;
+import fr.tse.fi2.hpp.labs.queries.impl.lab4.BloomGuava;
 import fr.tse.fi2.hpp.labs.queries.impl.lab4.RouteMembershipProcessor;
 
 /**
@@ -36,7 +37,7 @@ public class MainStreaming {
 		QueryProcessorMeasure measure = new QueryProcessorMeasure();
 		// Init dispatcher
 		StreamingDispatcher dispatch = new StreamingDispatcher(
-				"src/main/resources/data/1000Records.csv");//改这里
+				"src/main/resources/data/1000Records.csv");
 
 		// Query processors
 		List<AbstractQueryProcessor> processors = new ArrayList<>();
@@ -45,6 +46,7 @@ public class MainStreaming {
 //		processors.add(new AverageQuery(measure));
 //		processors.add(new IncrementalAverage(measure));
 //		processors.add(new RouteMembershipProcessor(measure));
+//		processors.add(new BloomGuava(measure));
 		processors.add(new BloomFiltres(measure));
 
 		// Register query processors
