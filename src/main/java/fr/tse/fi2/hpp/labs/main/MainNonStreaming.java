@@ -12,7 +12,7 @@ import fr.tse.fi2.hpp.labs.beans.DebsRecord;
 import fr.tse.fi2.hpp.labs.beans.measure.QueryProcessorMeasure;
 import fr.tse.fi2.hpp.labs.dispatcher.LoadFirstDispatcher;
 import fr.tse.fi2.hpp.labs.projet.Areas;
-import fr.tse.fi2.hpp.labs.projet.ProfitableAreas;
+import fr.tse.fi2.hpp.labs.projet.AreasProfitable;
 import fr.tse.fi2.hpp.labs.projet.RoutesFrequente;
 import fr.tse.fi2.hpp.labs.queries.AbstractQueryProcessor;
 import fr.tse.fi2.hpp.labs.queries.impl.SimpleQuerySumEvent;
@@ -77,7 +77,7 @@ public class MainNonStreaming {
 //		processors.add(new BloomGuava(measure));
 //		processors.add(new RoutesFrequente(measure));
 //		processors.add(new IncrementalAverage(measure));
-		processors.add(new ProfitableAreas(measure));
+		processors.add(new AreasProfitable(measure));
 	
 		
 		// Register query processors

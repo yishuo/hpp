@@ -17,7 +17,6 @@ public class Areas {
         setNbTaxisEmpty(0);
         setRec(new ArrayList<DebsRecord>());
         mediane = new ListMedian();
-        
     }
     
     // Ajouter un revenu.
