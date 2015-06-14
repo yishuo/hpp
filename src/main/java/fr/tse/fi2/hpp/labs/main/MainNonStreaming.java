@@ -75,7 +75,7 @@ public class MainNonStreaming {
 //		processors.add(new RouteMembershipProcessor(measure));
 //		processors.add(new BloomFiltres(measure));
 //		processors.add(new BloomGuava(measure));
-//		processors.add(new RoutesFrequente(measure));
+		processors.add(new RoutesFrequente(measure));
 		processors.add(new AreasProfitable(measure));
 	
 		
